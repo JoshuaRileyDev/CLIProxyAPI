@@ -535,6 +535,19 @@ func main() {
 		cfg = &config.Config{}
 	}
 
+	// Allow container deployments to provide credentials without writing them to the image.
+	if apiKey, ok := lookupEnv("API_KEY", "api_key"); ok {
+		cfg.APIKeys = []string{apiKey}
+	}
+	if managementKey, ok := lookupEnv("MANAGEMENT_KEY", "management_key"); ok {
+		if _, passwordSet := os.LookupEnv("MANAGEMENT_PASSWORD"); !passwordSet {
+			if errSet := os.Setenv("MANAGEMENT_PASSWORD", managementKey); errSet != nil {
+				log.Errorf("failed to set management key environment override: %v", errSet)
+				return
+			}
+		}
+	}
+
 	// In cloud deploy mode, check if we have a valid configuration
 	var configFileExists bool
 	if isCloudDeploy {

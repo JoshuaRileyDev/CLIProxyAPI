@@ -14,6 +14,8 @@ services:
     #   - .env
     environment:
       DEPLOY: ${DEPLOY:-}
+      API_KEY: ${API_KEY:-}
+      MANAGEMENT_KEY: ${MANAGEMENT_KEY:-}
     ports:
       - "8317:8317"
       - "8085:8085"
